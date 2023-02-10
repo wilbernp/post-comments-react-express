@@ -15,6 +15,7 @@ export default function useFetch<T>(cbSucces?:(data:T)=>void):[(axiosPromise: Pr
             const { data } = await axiosPromise
             setData(data)
         } catch (error:any) {
+            console.log("useFetch Error ", error)
             setError(error?.message || "An unexpected error has occurred")
         } finally {
             setLoading(false)
