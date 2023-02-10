@@ -7,6 +7,8 @@ export interface IComment {
     _id: string;
     content: string;
     author: IAuthor;
+    createdAt: Date;
+    updatedAt: Date;
 }
 
 export interface IPost {
