@@ -36,8 +36,6 @@ export default function Login() {
     }
   }
 
-
-  
   return (
     <form onSubmit={handleSubmit} style={{width:"50%",margin:"0 auto", display:"flex",flexDirection:"column",gap:"10px",alignItems:"center"}}>
       <div>

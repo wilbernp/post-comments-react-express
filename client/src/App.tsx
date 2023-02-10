@@ -6,21 +6,22 @@ import Login from './pages/Login/Login'
 import { useAppDispatch, useAppSelector } from './redux/hooks'
 import { IUser } from './types/user'
 import userAdapter from './adapters/user.adapter'
-
 import userService from './services/user.service'
 import { setIsAuth, setUser } from './redux/states/user.slice'
 import useAuth from './custom-hooks/useAuth'
 import NoMatch from './pages/NoMatch/NoMatch'
+import localStorageHandle from './utils/localStorage.handle'
+import { socket } from './services/socket.service'
 
 export default function App() {
   const dispatch = useAppDispatch()
-  const {user} = useAppSelector(state => state)
+  const { user } = useAppSelector(state => state)
   const [fetchProfile] = useFetch<IUser>(succesProfile)
-   const isAuth = useAuth({
+  const isAuth = useAuth({
     auth: "/auth/login",
     succesRedirect: "/",
     // excludes: ["/about"]
-  },[user.isAuth])
+  }, [user.isAuth])
 
   function succesProfile(profile: IUser) {
     const cleanData = userAdapter(profile)
@@ -31,22 +32,28 @@ export default function App() {
 
   useEffect(() => {
     if (isAuth) {
+      const token = localStorageHandle.getItem("token")
+      console.log("token ", token)
+      socket.auth = { token }
+      socket.connect()
       fetchProfile(userService.getProfile())
     }
   }, [isAuth])
-  
+
   return (
     <Routes>
-      <Route path='/'>
-        <Route index element={<Home />} />
-      </Route>
+
       {
-        !user.isAuth?
-      <Route path='auth'>
-        <Route path='login' element={<Login />} />
-      </Route>:<></>
+        user.isAuth ?
+        <Route path='/'>
+            <Route index element={<Home />} />
+          </Route>: 
+          <Route path='auth'>
+          <Route path='login' element={<Login />} />
+        </Route>
+          
       }
-      <Route path='*' element={<NoMatch/>}/>
+      <Route path='*' element={<NoMatch />} />
     </Routes>
   )
 }

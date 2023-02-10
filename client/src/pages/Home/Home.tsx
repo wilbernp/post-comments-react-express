@@ -18,7 +18,9 @@ export default function Home() {
   }
 
   useEffect(() => {
-    fetchPosts(postsService.getAllPosts())
+    if (user.isAuth) {
+      fetchPosts(postsService.getAllPosts())
+    }
   }, [])
 
   return (

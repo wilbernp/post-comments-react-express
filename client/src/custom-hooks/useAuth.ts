@@ -11,8 +11,8 @@ export default function useAuth(pathOptions:PathOptions,deps:React.DependencyLis
     const {pathname} = useLocation()
 
     useEffect(() => {
-    console.log("useefect")
       const token = localStorage.getItem("token")
+      console.log("useefect ", token)
       if (!token && !pathOptions?.excludes?.includes(pathname)) {
         setIsAuth(false)
         return navigate(pathOptions.auth,{replace:true})
