@@ -4,13 +4,13 @@ import { useEffect, useState } from 'react'
 import useFetch from "@/custom-hooks/useFetch"
 import commentService from '@/services/comment.service'
 import { socket } from '@/services/socket.service'
-import { isObject } from 'util'
 
 interface CommentsProps {
-    comments:IComment[],
-    postId:string
+    comments:IComment[];
+    postId:string;
+    onAddComment:(newComment:IComment) => void
 }
-export default function Comments({comments, postId}:CommentsProps) {
+export default function Comments({comments, postId, onAddComment}:CommentsProps) {
   const [comment, setComment] = useState("")
   const [fetchComment] = useFetch()
 
@@ -18,18 +18,23 @@ export default function Comments({comments, postId}:CommentsProps) {
     setComment(e.target.value)
   }
 
+  // se realiza la peticion al servidor para agregar un comentario a un post en especifico
   function handleCreateComment(){
     if (comment.length) {
       fetchComment(commentService.create(postId, comment))
     }
   }
 
+  // escucha eventos de socket enviados desde el servidor
   useEffect(() => {
     socket.on("new_comment", (newComment:IComment) =>{
-      console.log("new comment", newComment)
+      // una vez recibido el nuevo comentario se invoca esta funcion con dicho comentario para que se pueda
+      // se le para que se realice la accion especificada en la definicion de la funcion, por ejemplo
+      // generar un nuevo render
+      onAddComment(newComment)
     })
     return ()=> {
-      socket.off("send_comment")
+      socket.off("new_comment")
     }
   }, [socket]);
   return (
