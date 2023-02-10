@@ -9,7 +9,7 @@ export default {
         const body = req.body as ICommentBody
         const postId = req.params.postId as unknown as Types.ObjectId
         const userId = req.user.id
-
+        const io = req.io
         const comment:IComment = {
             content:body.content,
             author:userId,
@@ -17,6 +17,7 @@ export default {
         }
 
         const newComment = await commentsService.create(comment)
+        io.emit("new_comment", newComment)
         res.send(newComment)
     }
 }
