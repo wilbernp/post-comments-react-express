@@ -34,7 +34,7 @@ export default function Home() {
               <span style={{ fontSize: "1.3rem", color: "white", marginRight: "10px" }}>{post.author.username}</span>
               <span style={{ color: "#F0EEED", marginRight: "10px" }}>{dateFormated}</span>
               <p style={{ fontSize: "1.5rem", color: "#F0EEED" }}>{post.content}</p>
-             <Comments comments={post.comments}/>
+             <Comments postId={post._id} comments={post.comments}/>
             </div>
           )
         }) : <></>
